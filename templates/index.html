@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LeafBot 🌿</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f5f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #2e7d32;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #2e7d32;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .response-box {
+            background-color: #e8f5e9;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>LeafBot 🌿</h1>
+    <div class="container">
+        <form id="diagnose-form">
+            <label class="label">Describe the issue (optional):</label>
+            <textarea name="text" rows="4" placeholder="Describe the issue..."></textarea>
+
+            <label class="label">Select response language:</label>
+            <select name="language">
+                <option value="en" selected>English</option>
+                <option value="hi">Hindi</option>
+                <option value="bn">Bengali</option>
+                <option value="ta">Tamil</option>
+                <option value="te">Telugu</option>
+                <option value="kn">Kannada</option>
+                <option value="ml">Malayalam</option>
+                <option value="mr">Marathi</option>
+                <option value="gu">Gujarati</option>
+                <option value="pa">Punjabi</option>
+            </select>
+
+            <button type="submit">Diagnose</button>
+        </form>
+
+        <div id="response-box" class="response-box" style="display: none;">
+            <p><span class="label">Diagnosis:</span></p>
+            <p id="diagnosis-text"></p>
+
+            <p><span class="label">Your Description:</span></p>
+            <p id="description-text"></p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("diagnose-form");
+        const responseBox = document.getElementById("response-box");
+        const diagnosisText = document.getElementById("diagnosis-text");
+        const descriptionText = document.getElementById("description-text");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            const response = await fetch("/api/diagnose/", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            diagnosisText.textContent = data.response_text;
+            descriptionText.textContent = data.user_text || "No description provided.";
+            responseBox.style.display = "block";
+        });
+    </script>
+</body>
+</html>
